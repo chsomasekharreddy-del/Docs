@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, text
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.sql import func
 from sqlalchemy.sql.sqltypes import TIMESTAMP    
 
 from .database import Base
@@ -11,4 +12,4 @@ class User(Base):
     email = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
 
-    created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
+    created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=func.now())
