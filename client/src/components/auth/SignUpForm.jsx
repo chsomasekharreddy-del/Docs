@@ -26,10 +26,10 @@ const GithubIcon = () => (
 );
 
 export default function SignUpForm() {
-  const [name, setName] = useState('Alex Taylor');
-  const [email, setEmail] = useState('alex.taylor@doc.ai');
-  const [password, setPassword] = useState('••••••••••••');
-  const [agreeTerms, setAgreeTerms] = useState(true);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [agreeTerms, setAgreeTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const { signUp } = useAuth();

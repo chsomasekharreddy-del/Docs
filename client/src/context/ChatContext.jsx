@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { initialConversations, initialSavedInsights } from '../data/mockData';
 import { useNotification } from './NotificationContext';
 import { apiFetch } from '../lib/api';
 
@@ -10,12 +9,12 @@ export const ChatProvider = ({ children }) => {
 
   const [conversations, setConversations] = useState(() => {
     const saved = localStorage.getItem('docai_conversations');
-    return saved ? JSON.parse(saved) : initialConversations;
+    return saved ? JSON.parse(saved) : [];
   });
 
   const [savedInsights, setSavedInsights] = useState(() => {
     const saved = localStorage.getItem('docai_saved_insights');
-    return saved ? JSON.parse(saved) : initialSavedInsights;
+    return saved ? JSON.parse(saved) : [];
   });
 
   const [activeConversationId, setActiveConversationId] = useState(null);
@@ -38,8 +37,12 @@ export const ChatProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    localStorage.setItem('docai_conversations', JSON.stringify(conversations));
-  }, [conversations]);
+    if (settings.conversationHistory !== false) {
+      localStorage.setItem('docai_conversations', JSON.stringify(conversations));
+    } else {
+      localStorage.removeItem('docai_conversations');
+    }
+  }, [conversations, settings.conversationHistory]);
 
   useEffect(() => {
     localStorage.setItem('docai_saved_insights', JSON.stringify(savedInsights));

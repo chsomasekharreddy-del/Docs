@@ -27,11 +27,15 @@ export default function Profile() {
   const [name, setName] = useState(user?.name || "Alex Taylor");
   const [email, setEmail] = useState(user?.email || "alex.taylor@doc.ai");
 
-  const handleSaveProfile = (e) => {
+  const handleSaveProfile = async (e) => {
     e.preventDefault();
-    updateUser({ name, email });
-    setIsEditing(false);
-    showToast("Profile details updated successfully!", "success");
+    try {
+      await updateUser({ name, email });
+      setIsEditing(false);
+      showToast("Profile details updated successfully!", "success");
+    } catch (error) {
+      showToast(error.message || "Could not update your profile.", "warning");
+    }
   };
 
   return (
@@ -87,11 +91,9 @@ export default function Profile() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
             <div className="flex items-center gap-5">
               <div className="relative">
-                <img
-                  src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200"}
-                  alt={user?.name}
-                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl object-cover ring-4 ring-teal-500/20 shadow-lg"
-                />
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-slate-100 dark:bg-slate-800 ring-4 ring-teal-500/20 shadow-lg flex items-center justify-center text-slate-500 dark:text-slate-300">
+                  <User className="w-10 h-10 sm:w-12 sm:h-12" aria-label="Profile placeholder" />
+                </div>
                 <span className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900 flex items-center justify-center text-white text-[10px]">
                   ✓
                 </span>

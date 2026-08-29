@@ -8,3 +8,5 @@ Docs.ai is an AI-powered healthcare platform that predicts possible diseases fro
 3. Copy `client/.env.example` to `client/.env`, install packages with `npm install`, then run `npm run dev` from `client`.
 
 The browser calls `/api` in development, which Vite proxies to FastAPI. The backend also allows the standard Vite development origins through CORS for deployments where the client and API run on separate origins.
+
+The chat and report endpoints require a signed-in user and are rate-limited to 20 requests per minute per user/IP. Chat history stays in the browser only when the user enables the conversation-history setting.

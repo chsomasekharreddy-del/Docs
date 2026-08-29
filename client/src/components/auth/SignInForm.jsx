@@ -28,8 +28,8 @@ const GithubIcon = () => (
 );
 
 export default function SignInForm() {
-  const [email, setEmail] = useState('alex.taylor@doc.ai');
-  const [password, setPassword] = useState('••••••••••••');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
 

@@ -1,7 +1,6 @@
 export const initialUserProfile = {
   name: "Alex Taylor",
   email: "alex.taylor@doc.ai",
-  avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250",
   tier: "Doc.ai Plus • Pro Plan",
   memberSince: "January 2024",
   stats: {

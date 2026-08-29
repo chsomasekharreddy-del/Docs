@@ -10,8 +10,7 @@ export const AuthProvider = ({ children }) => {
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    const saved = localStorage.getItem('docai_auth');
-    return saved !== null ? JSON.parse(saved) : false;
+    return Boolean(localStorage.getItem('docai_token'));
   });
 
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
@@ -61,8 +60,12 @@ export const AuthProvider = ({ children }) => {
     setIsSignOutModalOpen(false);
   };
 
-  const updateUser = (updates) => {
-    setUser(prev => ({ ...prev, ...updates }));
+  const updateUser = async (updates) => {
+    const profile = await apiFetch('/users/me', {
+      method: 'PATCH',
+      body: JSON.stringify({ username: updates.name, email: updates.email }),
+    });
+    setUser({ ...profile, name: profile.username });
   };
 
   return (

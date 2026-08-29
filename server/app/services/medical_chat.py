@@ -4,10 +4,13 @@ from __future__ import annotations
 
 from pathlib import Path
 import re
+import logging
 
 from fastapi import HTTPException, status
 
 from ..config import settings
+
+logger = logging.getLogger(__name__)
 
 MEDICAL_DATA_DIR = (
     Path(__file__).resolve().parents[3]
@@ -55,12 +58,15 @@ class MedicalChatService:
             ) from exc
 
         context = self.retrieve(message)
-        system_prompt = f"""You are HealthSage, a cautious medical information assistant.
+        system_prompt = f"""You are HealthSage, a cautious medical information assistant. You provide health information, not a diagnosis.
 Use the following local medical reference material when relevant:\n{context}
 
+Give a focused, plain-language answer in Markdown. Put each section heading on its own line in the form **Heading**. Put every bullet and numbered step on its own line.
+For symptom questions, use these headings when appropriate: Possible explanations, What you can do now, When to seek urgent help, and Follow-up questions.
 Do not present a diagnosis as certain. Ask at most two clarifying questions when needed.
+For a headache, immediately recommend emergency care for a sudden worst-ever headache, new weakness or numbness, confusion, fainting, seizure, stiff neck with fever, vision or speech changes, head injury, pregnancy-related severe headache, or chest pain.
 If symptoms suggest an emergency, tell the user to seek emergency care now.
-Always encourage professional medical advice for concerning or persistent symptoms."""
+Always encourage professional medical advice for concerning, persistent, or worsening symptoms."""
         safe_history = [
             {"role": item["role"], "content": item["content"]}
             for item in history[-12:]
@@ -70,9 +76,12 @@ Always encourage professional medical advice for concerning or persistent sympto
             response = Groq(api_key=settings.groq_api_key).chat.completions.create(
                 model=settings.groq_model,
                 messages=[{"role": "system", "content": system_prompt}, *safe_history, {"role": "user", "content": message}],
+                temperature=0.2,
+                max_completion_tokens=500,
             )
             return (response.choices[0].message.content or "I could not generate a response.").strip()
         except Exception as exc:
+            logger.exception("Groq chat completion failed")
             raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail="The medical AI provider could not complete the request.") from exc
 
     def report(self, history: list[dict[str, str]]) -> str:

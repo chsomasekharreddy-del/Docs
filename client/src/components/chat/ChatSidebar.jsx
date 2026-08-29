@@ -225,11 +225,9 @@ export default function ChatSidebar({ isMobileOpen, onCloseMobile }) {
               onClick={onCloseMobile}
               className="flex items-center gap-2.5 min-w-0 hover:opacity-80 transition-opacity"
             >
-              <img
-                src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150"}
-                alt={user?.name || "User"}
-                className="w-8 h-8 rounded-full object-cover ring-2 ring-teal-500/30 shrink-0"
-              />
+              <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 ring-2 ring-teal-500/30 shrink-0 flex items-center justify-center text-slate-600 dark:text-slate-300">
+                <User className="w-4 h-4" aria-label="Profile placeholder" />
+              </div>
               <div className="min-w-0">
                 <h4 className="text-xs font-bold text-slate-900 dark:text-white truncate">
                   {user?.name || "Alex Taylor"}

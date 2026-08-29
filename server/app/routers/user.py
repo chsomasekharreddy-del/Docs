@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status, HTTPException, Depends
-from sqlalchemy.orm import Session 
+from sqlalchemy.orm import Session
 
 from .. import models, schemas
 from ..database import get_db
@@ -44,6 +44,33 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 @router.get("/me", response_model=schemas.UserResponse)
 def get_current_user(current_user: models.User = Depends(oauth2.get_current_user)):
+    return current_user
+
+
+@router.patch("/me", response_model=schemas.UserResponse)
+def update_current_user(
+    updates: schemas.UserUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(oauth2.get_current_user),
+):
+    if updates.username is not None:
+        username = updates.username.strip()
+        if not username:
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Username cannot be blank.")
+        existing = db.query(models.User).filter(models.User.username == username, models.User.id != current_user.id).first()
+        if existing:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username is already taken!")
+        current_user.username = username
+
+    if updates.email is not None:
+        email = updates.email.lower().strip()
+        existing = db.query(models.User).filter(models.User.email == email, models.User.id != current_user.id).first()
+        if existing:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered!")
+        current_user.email = email
+
+    db.commit()
+    db.refresh(current_user)
     return current_user
 
 @router.get("/{id}", response_model=schemas.UserResponse)

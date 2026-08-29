@@ -1,25 +1,22 @@
 import React from 'react';
-import { Star, ShieldCheck, CheckCircle2, Lock, Award, Stethoscope } from 'lucide-react';
+import { Star, ShieldCheck, CheckCircle2, Lock, Award, Stethoscope, UserRound } from 'lucide-react';
 
 const testimonials = [
   {
     name: "Dr. Marcus Vance, MD",
     role: "Internal Medicine Specialist",
-    avatar: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=150",
     content: "The Medical Insight Card structure represents how clinical triage should be presented to patients. It frames symptoms clearly and helps patients come to appointments with organized context.",
     badge: "Verified Clinician"
   },
   {
     name: "Dr. Sarah Lin, PhD",
     role: "Clinical Bioinformatician",
-    avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=150",
     content: "Having real-time transparent reasoning states and clear safety disclaimers elevates Doc.ai far above standard LLM conversational wrappers.",
     badge: "Health Tech Researcher"
   },
   {
     name: "David Chen",
     role: "Software Architect & Patient",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150",
     content: "I use Doc.ai whenever I get persistent tension headaches or exercise soreness. The structured next steps and longitudinal factor tracking give me actionable clarity.",
     badge: "Pro Member"
   }
@@ -60,11 +57,9 @@ export default function TestimonialsSection() {
               </div>
 
               <div className="flex items-center gap-3 pt-6 mt-6 border-t border-slate-200 dark:border-slate-800/80">
-                <img
-                  src={item.avatar}
-                  alt={item.name}
-                  className="w-11 h-11 rounded-full object-cover ring-2 ring-teal-500/30"
-                />
+                <div className="w-11 h-11 rounded-full bg-slate-200 dark:bg-slate-800 ring-2 ring-teal-500/30 flex items-center justify-center text-slate-500 dark:text-slate-300">
+                  <UserRound className="w-5 h-5" aria-label="Profile placeholder" />
+                </div>
                 <div>
                   <h4 className="text-sm font-bold text-slate-900 dark:text-white">
                     {item.name}

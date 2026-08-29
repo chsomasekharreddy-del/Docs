@@ -125,6 +125,10 @@ def test_get_current_user_me_invalid_token():
     response = client.get('/users/me', headers={'Authorization': 'Bearer invalidtoken'})
     assert response.status_code == 401
 
+def test_chat_requires_authentication():
+    response = client.post('/chat', json={'message': 'Hello', 'history': []})
+    assert response.status_code == 401
+
 def test_get_user_by_id():
     login_res = client.post('/auth/login', data={
         'username': 'johndoe',
