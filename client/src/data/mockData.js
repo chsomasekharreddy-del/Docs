@@ -16,11 +16,6 @@ export const initialUserProfile = {
     oxygenSaturation: "99% SpO2",
     bmi: "22.4 (Healthy)",
     allergies: ["Penicillin", "Latex", "Pollen"],
-  },
-  emergencyContact: {
-    name: "Elena Taylor",
-    relationship: "Spouse",
-    phone: "+1 (555) 234-8901",
   }
 };
 

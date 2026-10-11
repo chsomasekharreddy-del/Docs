@@ -21,7 +21,6 @@ export const ChatProvider = ({ children }) => {
   const [isAiThinking, setIsAiThinking] = useState(false);
   const [thinkingStage, setThinkingStage] = useState(1); // 1: Analyzing, 2: Retrieving, 3: Preparing
   const [searchQuery, setSearchQuery] = useState('');
-  const [isHealthPanelOpen, setIsHealthPanelOpen] = useState(true);
 
   // Settings State
   const [settings, setSettings] = useState(() => {
@@ -214,8 +213,6 @@ export const ChatProvider = ({ children }) => {
         saveInsight,
         removeInsight,
         deleteConversation,
-        isHealthPanelOpen,
-        setIsHealthPanelOpen,
         settings,
         updateSetting,
       }}

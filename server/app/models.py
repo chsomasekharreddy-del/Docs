@@ -10,6 +10,8 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     username = Column(String, unique=True, nullable=False)
     email = Column(String, unique=True, nullable=False)
-    password = Column(String, nullable=False)
+    password = Column(String, nullable=True)
+    google_id = Column(String, unique=True, nullable=True, index=True)
+    avatar_url = Column(String, nullable=True)
 
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=func.now())

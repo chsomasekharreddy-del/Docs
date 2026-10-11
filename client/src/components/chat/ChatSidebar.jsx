@@ -5,18 +5,16 @@ import {
   Plus, 
   Search, 
   MessageSquare, 
-  Bookmark, 
   Settings, 
   User, 
   LogOut, 
   Trash2, 
   X,
-  ChevronRight,
-  Sparkles
 } from 'lucide-react';
 import { useChat } from '../../context/ChatContext';
 import { useAuth } from '../../context/AuthContext';
 import ConfirmationModal from '../common/ConfirmationModal';
+import { assetUrl } from '../../lib/api';
 
 export default function ChatSidebar({ isMobileOpen, onCloseMobile }) {
   const { 
@@ -62,7 +60,7 @@ export default function ChatSidebar({ isMobileOpen, onCloseMobile }) {
       )}
 
       <aside
-        className={`fixed md:static inset-y-0 left-0 z-40 w-72 lg:w-80 shrink-0 h-full bg-white dark:bg-[#070c18] border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between transition-transform duration-300 ${
+        className={`fixed md:static inset-y-0 left-0 z-40 w-64 shrink-0 h-full bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between transition-transform duration-300 ${
           isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
@@ -70,7 +68,7 @@ export default function ChatSidebar({ isMobileOpen, onCloseMobile }) {
           {/* Brand Header */}
           <div className="p-4 sm:p-5 flex items-center justify-between border-b border-slate-200 dark:border-slate-800">
             <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center text-white shadow-glow-teal group-hover:scale-105 transition-transform">
+              <div className="w-9 h-9 rounded-lg bg-teal-600 flex items-center justify-center text-white">
                 <Activity className="w-5 h-5" />
               </div>
               <div className="flex flex-col">
@@ -78,7 +76,7 @@ export default function ChatSidebar({ isMobileOpen, onCloseMobile }) {
                   Doc<span className="text-teal-500">.ai</span>
                 </span>
                 <span className="text-[10px] text-slate-400 font-medium tracking-wider uppercase mt-0.5">
-                  Command Center
+                  Health assistant
                 </span>
               </div>
             </Link>
@@ -96,7 +94,7 @@ export default function ChatSidebar({ isMobileOpen, onCloseMobile }) {
           <div className="p-4 pb-2">
             <button
               onClick={handleNewConsultation}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-white text-sm font-bold shadow-glow-teal hover:shadow-teal-500/40 transition-all transform hover:-translate-y-0.5"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold transition-colors"
             >
               <Plus className="w-4 h-4" />
               <span>New Consultation</span>
@@ -112,7 +110,7 @@ export default function ChatSidebar({ isMobileOpen, onCloseMobile }) {
                 placeholder="Search consultations..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-100 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                className="w-full pl-9 pr-3 py-2 text-xs rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-teal-500"
               />
             </div>
           </div>
@@ -132,8 +130,8 @@ export default function ChatSidebar({ isMobileOpen, onCloseMobile }) {
                     key={convo.id}
                     className={`group relative flex items-center justify-between p-2.5 rounded-xl transition-all duration-150 cursor-pointer ${
                       isActive
-                        ? 'bg-teal-500/10 dark:bg-teal-950/40 border border-teal-500/30 text-teal-700 dark:text-teal-300 font-semibold'
-                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900/60 border border-transparent'
+                        ? 'bg-teal-50 dark:bg-teal-950/30 text-teal-700 dark:text-teal-300 font-semibold'
+                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 border border-transparent'
                     }`}
                     onClick={() => handleSelectConvo(convo.id)}
                   >
@@ -170,25 +168,9 @@ export default function ChatSidebar({ isMobileOpen, onCloseMobile }) {
           {/* Navigation Links */}
           <div className="p-3 border-t border-slate-200 dark:border-slate-800 space-y-1">
             <Link
-              to="/insights"
-              onClick={onCloseMobile}
-              className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold transition-colors ${
-                isCurrentActive('/insights')
-                  ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20'
-                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900'
-              }`}
-            >
-              <div className="flex items-center gap-2.5">
-                <Bookmark className="w-4 h-4 text-teal-500" />
-                <span>Saved Insights</span>
-              </div>
-              <ChevronRight className="w-3.5 h-3.5 opacity-50" />
-            </Link>
-
-            <Link
               to="/settings"
               onClick={onCloseMobile}
-              className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold transition-colors ${
+              className={`flex items-center p-2.5 rounded-lg text-xs font-semibold transition-colors ${
                 isCurrentActive('/settings')
                   ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20'
                   : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900'
@@ -198,23 +180,6 @@ export default function ChatSidebar({ isMobileOpen, onCloseMobile }) {
                 <Settings className="w-4 h-4 text-slate-500" />
                 <span>Settings</span>
               </div>
-              <ChevronRight className="w-3.5 h-3.5 opacity-50" />
-            </Link>
-
-            <Link
-              to="/profile"
-              onClick={onCloseMobile}
-              className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold transition-colors ${
-                isCurrentActive('/profile')
-                  ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20'
-                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900'
-              }`}
-            >
-              <div className="flex items-center gap-2.5">
-                <User className="w-4 h-4 text-cyan-500" />
-                <span>Profile</span>
-              </div>
-              <ChevronRight className="w-3.5 h-3.5 opacity-50" />
             </Link>
           </div>
 
@@ -226,14 +191,14 @@ export default function ChatSidebar({ isMobileOpen, onCloseMobile }) {
               className="flex items-center gap-2.5 min-w-0 hover:opacity-80 transition-opacity"
             >
               <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 ring-2 ring-teal-500/30 shrink-0 flex items-center justify-center text-slate-600 dark:text-slate-300">
-                <User className="w-4 h-4" aria-label="Profile placeholder" />
+                {user?.avatar_url ? <img src={assetUrl(user.avatar_url)} alt="Your profile" className="h-full w-full rounded-full object-cover" /> : <User className="w-4 h-4" aria-label="Profile placeholder" />}
               </div>
               <div className="min-w-0">
                 <h4 className="text-xs font-bold text-slate-900 dark:text-white truncate">
-                  {user?.name || "Alex Taylor"}
+                  {user?.name || "Profile"}
                 </h4>
                 <span className="text-[10px] text-slate-400 truncate block">
-                  {user?.tier || "Pro Member"}
+                  Account settings
                 </span>
               </div>
             </Link>

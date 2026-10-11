@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   User, 
@@ -7,7 +7,6 @@ import {
   Bookmark, 
   Settings, 
   Sparkles, 
-  Phone, 
   ArrowLeft,
   Flame,
   FileHeart,
@@ -18,19 +17,45 @@ import { useAuth } from '../context/AuthContext';
 import { useChat } from '../context/ChatContext';
 import BottomNavigation from '../components/common/BottomNavigation';
 import { useNotification } from '../context/NotificationContext';
+import { assetUrl } from '../lib/api';
 
 export default function Profile() {
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, uploadAvatar } = useAuth();
   const { savedInsights, conversations } = useChat();
   const { showToast } = useNotification();
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(user?.name || "Alex Taylor");
   const [email, setEmail] = useState(user?.email || "alex.taylor@doc.ai");
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
+
+  useEffect(() => () => {
+    if (avatarPreview) URL.revokeObjectURL(avatarPreview);
+  }, [avatarPreview]);
+
+  const handleAvatarChange = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 2 * 1024 * 1024) {
+      showToast('Choose a JPG, PNG, or WebP image no larger than 2 MB.', 'warning');
+      event.target.value = '';
+      return;
+    }
+    if (avatarPreview) URL.revokeObjectURL(avatarPreview);
+    setAvatarFile(file);
+    setAvatarPreview(URL.createObjectURL(file));
+  };
 
   const handleSaveProfile = async (e) => {
     e.preventDefault();
     try {
       await updateUser({ name, email });
+      if (avatarFile) {
+        await uploadAvatar(avatarFile);
+        setAvatarFile(null);
+        if (avatarPreview) URL.revokeObjectURL(avatarPreview);
+        setAvatarPreview(null);
+      }
       setIsEditing(false);
       showToast("Profile details updated successfully!", "success");
     } catch (error) {
@@ -91,9 +116,17 @@ export default function Profile() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
             <div className="flex items-center gap-5">
               <div className="relative">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-slate-100 dark:bg-slate-800 ring-4 ring-teal-500/20 shadow-lg flex items-center justify-center text-slate-500 dark:text-slate-300">
-                  <User className="w-10 h-10 sm:w-12 sm:h-12" aria-label="Profile placeholder" />
-                </div>
+                {avatarPreview || user?.avatar_url ? (
+                  <img
+                    src={avatarPreview || assetUrl(user.avatar_url)}
+                    alt="Your profile"
+                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl object-cover ring-4 ring-teal-500/20 shadow-lg"
+                  />
+                ) : (
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-slate-100 dark:bg-slate-800 ring-4 ring-teal-500/20 shadow-lg flex items-center justify-center text-slate-500 dark:text-slate-300">
+                    <User className="w-10 h-10 sm:w-12 sm:h-12" aria-label="Profile placeholder" />
+                  </div>
+                )}
                 <span className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900 flex items-center justify-center text-white text-[10px]">
                   ✓
                 </span>
@@ -139,6 +172,18 @@ export default function Profile() {
                   onChange={(e) => setName(e.target.value)}
                   className="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500/30"
                 />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
+                  Profile photo
+                </label>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleAvatarChange}
+                  className="block w-full text-xs text-slate-500 dark:text-slate-400 file:mr-3 file:rounded-lg file:border-0 file:bg-teal-500/10 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-teal-700 dark:file:text-teal-300 hover:file:bg-teal-500/20"
+                />
+                <p className="mt-1 text-[11px] text-slate-400">JPG, PNG, or WebP, up to 2 MB.</p>
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
@@ -272,34 +317,7 @@ export default function Profile() {
             </div>
           </div>
 
-          {/* Emergency Contacts & Settings Shortcut */}
-          <div className="space-y-6">
-            <div className="rounded-3xl p-6 bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 space-y-4">
-              <div className="flex items-center gap-2 pb-3 border-b border-slate-200 dark:border-slate-800">
-                <Phone className="w-5 h-5 text-teal-500" />
-                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">
-                  Emergency Medical Contact
-                </h3>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 space-y-2 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Contact Person:</span>
-                  <span className="font-bold text-slate-900 dark:text-white">{user?.emergencyContact?.name || "Elena Taylor"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Relationship:</span>
-                  <span className="font-semibold text-slate-700 dark:text-slate-300">{user?.emergencyContact?.relationship || "Spouse"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Emergency Phone:</span>
-                  <span className="font-mono font-bold text-teal-600 dark:text-teal-400">{user?.emergencyContact?.phone || "+1 (555) 234-8901"}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Links Card */}
-            <div className="rounded-3xl p-6 bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <div className="rounded-3xl p-6 bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 flex items-center justify-between">
               <div className="space-y-1">
                 <h4 className="text-sm font-bold text-slate-900 dark:text-white">
                   System Preferences
@@ -316,7 +334,6 @@ export default function Profile() {
                 <span>Open Settings</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </Link>
-            </div>
           </div>
         </div>
       </main>

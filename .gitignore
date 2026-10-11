@@ -3,5 +3,6 @@ server/.venv/
 client/.env
 client/node_modules/
 client/dist/
+server/uploads/
 __pycache__/
 *.pyc

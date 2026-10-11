@@ -21,10 +21,6 @@ class ChatRequest(BaseModel):
     history: list[ChatMessage] = Field(default_factory=list, max_length=20)
 
 
-class ReportRequest(BaseModel):
-    history: list[ChatMessage] = Field(default_factory=list, min_length=1, max_length=20)
-
-
 @router.post("")
 def chat(
     request: ChatRequest,
@@ -34,14 +30,3 @@ def chat(
     client_host = http_request.client.host if http_request.client else "unknown"
     check_rate_limit(f"{current_user.id}:{client_host}")
     return {"reply": medical_chat_service.chat(request.message, [message.model_dump() for message in request.history])}
-
-
-@router.post("/report")
-def report(
-    request: ReportRequest,
-    http_request: Request,
-    current_user: models.User = Depends(oauth2.get_current_user),
-):
-    client_host = http_request.client.host if http_request.client else "unknown"
-    check_rate_limit(f"{current_user.id}:{client_host}")
-    return {"report": medical_chat_service.report([message.model_dump() for message in request.history])}

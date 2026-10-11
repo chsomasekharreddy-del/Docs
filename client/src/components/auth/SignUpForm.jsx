@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { User, Mail, Lock, ArrowRight, Loader2, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext';
+import { API_URL } from '../../lib/api';
 
 const GoogleIcon = () => (
   <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -54,39 +55,19 @@ export default function SignUpForm() {
     }
   };
 
-  const handleSocialAuth = (provider) => {
-    showToast("Social authentication will be connected later.", "info");
-  };
+  const handleGoogleAuth = () => window.location.assign(`${API_URL}/auth/google`);
 
   return (
     <div className="space-y-6">
       {/* Social Logins */}
-      <div className="grid grid-cols-3 gap-3">
+      <div>
         <button
           type="button"
-          onClick={() => handleSocialAuth('Google')}
-          className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-colors shadow-sm"
+          onClick={handleGoogleAuth}
+          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-colors shadow-sm"
         >
           <GoogleIcon />
-          <span>Google</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => handleSocialAuth('Apple')}
-          className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-colors shadow-sm"
-        >
-          <AppleIcon />
-          <span>Apple</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => handleSocialAuth('GitHub')}
-          className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-colors shadow-sm"
-        >
-          <GithubIcon />
-          <span>GitHub</span>
+          <span>Continue with Google</span>
         </button>
       </div>
 

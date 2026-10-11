@@ -39,6 +39,15 @@ export const AuthProvider = ({ children }) => {
     return true;
   };
 
+  const completeGoogleSignIn = async (accessToken) => {
+    localStorage.setItem('docai_token', accessToken);
+    const profile = await apiFetch('/users/me', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    setUser({ ...profile, name: profile.username });
+    setIsAuthenticated(true);
+  };
+
   const signUp = async (name, email, password) => {
     const baseUsername = name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '') || 'user';
     await apiFetch('/users', {
@@ -68,6 +77,13 @@ export const AuthProvider = ({ children }) => {
     setUser({ ...profile, name: profile.username });
   };
 
+  const uploadAvatar = async (file) => {
+    const form = new FormData();
+    form.append('file', file);
+    const profile = await apiFetch('/users/me/avatar', { method: 'POST', body: form });
+    setUser({ ...profile, name: profile.username });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -75,11 +91,13 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated,
         signIn,
         signUp,
+        completeGoogleSignIn,
         signOut: openSignOutModal,
         isSignOutModalOpen,
         closeSignOutModal,
         confirmSignOut,
         updateUser,
+        uploadAvatar,
       }}
     >
       {children}

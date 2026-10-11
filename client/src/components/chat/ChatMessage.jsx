@@ -3,6 +3,7 @@ import { Sparkles, User } from 'lucide-react';
 import MedicalInsightCard from './MedicalInsightCard';
 import { useAuth } from '../../context/AuthContext';
 import { useChat } from '../../context/ChatContext';
+import { assetUrl } from '../../lib/api';
 
 function formatInline(text) {
   return text.split(/(\*\*[^*]+\*\*)/g).map((part, index) =>
@@ -54,9 +55,11 @@ export default function ChatMessage({ message }) {
 
         {/* User Avatar */}
         <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-800 shrink-0 ring-2 ring-teal-500/30">
-          <div className="w-full h-full flex items-center justify-center text-xs font-bold text-slate-700 dark:text-slate-300">
-            <User className="w-4 h-4" aria-label="Profile placeholder" />
-          </div>
+          {user?.avatar_url ? <img src={assetUrl(user.avatar_url)} alt="Your profile" className="h-full w-full object-cover" /> : (
+            <div className="w-full h-full flex items-center justify-center text-xs font-bold text-slate-700 dark:text-slate-300">
+              <User className="w-4 h-4" aria-label="Profile placeholder" />
+            </div>
+          )}
         </div>
       </div>
     );

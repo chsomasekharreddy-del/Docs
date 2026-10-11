@@ -9,7 +9,6 @@ import {
   ShieldCheck, 
   Bell, 
   Trash2, 
-  Download, 
   ArrowLeft,
   CheckCircle2,
   AlertTriangle,
@@ -23,31 +22,13 @@ import ConfirmationModal from '../components/common/ConfirmationModal';
 
 export default function Settings() {
   const { theme, setTheme, toggleTheme } = useTheme();
-  const { settings, updateSetting, conversations } = useChat();
+  const { settings, updateSetting } = useChat();
   const { showToast } = useNotification();
 
   const [isClearModalOpen, setIsClearModalOpen] = useState(false);
 
   const handleToggle = (key) => {
     updateSetting(key, !settings[key]);
-  };
-
-  const handleExportData = () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(
-      JSON.stringify({
-        exportDate: new Date().toISOString(),
-        settings,
-        conversationsCount: conversations.length,
-        system: "Doc.ai Medical Command Center Prototype",
-      }, null, 2)
-    );
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `docai_telemetry_export_${Date.now()}.json`);
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-    showToast("Telemetry data package exported!", "success");
   };
 
   const handleClearHistory = () => {
@@ -253,21 +234,16 @@ export default function Settings() {
         {/* Section 4: Data Management */}
         <div className="rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 shadow-xl space-y-4">
           <div className="flex items-center gap-2.5 pb-4 border-b border-slate-200 dark:border-slate-800">
-            <Download className="w-5 h-5 text-indigo-500" />
+            <Trash2 className="w-5 h-5 text-rose-500" />
             <h3 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">
               Data Management
             </h3>
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-2">
-            <button
-              onClick={handleExportData}
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200 transition-colors"
-            >
-              <Download className="w-4 h-4" />
-              <span>Export Telemetry (JSON)</span>
-            </button>
-
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Conversation history is stored locally in this browser and cannot be exported from this app.
+            </p>
             <button
               onClick={() => setIsClearModalOpen(true)}
               className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 text-xs font-bold transition-colors"

@@ -175,12 +175,28 @@ GROQ_MODEL=openai/gpt-oss-20b
 
 # CORS Configuration
 CORS_ORIGINS=http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000,http://127.0.0.1:3000
+
+# Google OAuth (optional, enables "Continue with Google")
+FRONTEND_URL=http://localhost:5173
+GOOGLE_CLIENT_ID=your-google-oauth-client-id
+GOOGLE_CLIENT_SECRET=your-google-oauth-client-secret
+GOOGLE_REDIRECT_URI=http://127.0.0.1:8000/auth/google/callback
 ```
 
 > **Tip:** You can generate a secure 256-bit secret key for `JWT_SECRET_KEY` using:
 > ```bash
 > python server/scripts/generate_secret.py
 > ```
+
+### Google sign-in setup
+
+In Google Cloud Console, create an **OAuth client ID** for a Web application. Add this exact authorized redirect URI:
+
+```text
+http://127.0.0.1:8000/auth/google/callback
+```
+
+Copy the resulting client ID and client secret into `server/.env` using the variables above, then restart the backend. The redirect URI must exactly match the value configured in Google Cloud. For production, change both `FRONTEND_URL` and `GOOGLE_REDIRECT_URI` to your HTTPS deployment URLs and register that production redirect URI in Google Cloud.
 
 ---
 

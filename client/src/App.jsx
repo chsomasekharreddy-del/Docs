@@ -8,6 +8,7 @@ import { ChatProvider } from './context/ChatContext';
 import Landing from './pages/Landing';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import AuthCallback from './pages/AuthCallback';
 import Logout from './pages/Logout';
 import Chat from './pages/Chat';
 import Insights from './pages/Insights';
@@ -28,6 +29,7 @@ export default function App() {
                 <Route path="/" element={<Landing />} />
                 <Route path="/signin" element={<SignIn />} />
                 <Route path="/signup" element={<SignUp />} />
+                <Route path="/auth/callback" element={<AuthCallback />} />
                 <Route path="/logout" element={<Logout />} />
 
                 {/* Application Routes */}

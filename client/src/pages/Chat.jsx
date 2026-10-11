@@ -7,7 +7,6 @@ import WelcomeScreen from '../components/chat/WelcomeScreen';
 import ChatMessage from '../components/chat/ChatMessage';
 import AIThinkingAnimation from '../components/chat/AIThinkingAnimation';
 import ChatInput from '../components/chat/ChatInput';
-import HealthContextPanel from '../components/chat/HealthContextPanel';
 import BottomNavigation from '../components/common/BottomNavigation';
 
 export default function Chat() {
@@ -20,9 +19,7 @@ export default function Chat() {
     activeConversation, 
     sendMessage, 
     isAiThinking, 
-    thinkingStage,
-    isHealthPanelOpen,
-    setIsHealthPanelOpen
+    thinkingStage
   } = useChat();
 
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -63,7 +60,7 @@ export default function Chat() {
   const hasMessages = messages.length > 0;
 
   return (
-    <div className="flex h-screen w-full bg-slate-50 dark:bg-[#080d1a] overflow-hidden">
+    <div className="flex h-screen w-full bg-slate-50 dark:bg-slate-950 overflow-hidden">
       {/* Sidebar */}
       <ChatSidebar
         isMobileOpen={mobileSidebarOpen}
@@ -75,7 +72,7 @@ export default function Chat() {
         <ChatHeader onOpenMobileSidebar={() => setMobileSidebarOpen(true)} />
 
         {/* Message Stream */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-4 pb-28 sm:pb-32">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 pb-28 sm:pb-32">
           {!hasMessages ? (
             <WelcomeScreen onSelectPrompt={handleSelectSuggestion} />
           ) : (
@@ -101,12 +98,6 @@ export default function Chat() {
           />
         </div>
       </div>
-
-      {/* Health Context Panel (Right Side) */}
-      <HealthContextPanel
-        isOpen={isHealthPanelOpen}
-        onClose={() => setIsHealthPanelOpen(false)}
-      />
 
       {/* Mobile Bottom Navigation Bar */}
       <BottomNavigation />

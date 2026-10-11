@@ -84,14 +84,4 @@ Always encourage professional medical advice for concerning, persistent, or wors
             logger.exception("Groq chat completion failed")
             raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail="The medical AI provider could not complete the request.") from exc
 
-    def report(self, history: list[dict[str, str]]) -> str:
-        conversation = "\n".join(
-            f"{item.get('role', 'user').title()}: {item.get('content', '')}" for item in history[-20:]
-        )
-        return self.chat(
-            "Create a concise informational summary of the conversation. Include possible conditions, precautions, and when to seek urgent care. Conversation:\n" + conversation,
-            [],
-        )
-
-
 medical_chat_service = MedicalChatService()
